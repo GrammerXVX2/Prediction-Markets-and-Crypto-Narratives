@@ -1,1 +1,7 @@
-# This scaffold currently relies on Python standard library only.
+# Core first-integration dependencies:
+# - httpx: HTTP client for Polymarket/news API calls.
+# - pydantic: typed validation for normalized market/news payloads.
+# - tenacity: retries/backoff for unstable upstream APIs.
+httpx==0.27.2
+pydantic==2.9.2
+tenacity==9.0.0

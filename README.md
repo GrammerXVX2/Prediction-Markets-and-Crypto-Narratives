@@ -82,20 +82,19 @@ python main.py
 - No portfolio state persistence and no observability dashboard.
 - No automated test suite yet.
 
-## First implementation priority (recommended)
+## First integration: Polymarket + news adapter skeleton
 
-**Implement Polymarket integration first** (`data/polymarket_adapter.py`) with read-only market ingestion and normalized event schema.
+This milestone now includes a first integration scaffold with explicit method contracts:
 
-Why this first:
-1. Directly aligned with repository focus on prediction markets.
-2. Provides immediate, structured signals for later scoring/risk modules.
-3. Lower execution risk than order placement because it starts as data-only integration.
+- `data/polymarket_adapter.py`
+  - `fetch_event_quotes()`: quote snapshot prototype for market events.
+  - `fetch_betting_history(event_id, limit)`: historical bets/trades prototype.
+- `data/news_adapter.py`
+  - `fetch_latest_posts_by_keywords(keywords, limit)`: keyword-based news extraction stub.
+- `core/agent.py`
+  - `aggregate_quotes_and_news(event_quotes, news_posts)`: prototype payload builder for decision input (no business logic).
 
-Minimum scope for milestone:
-- Pull active markets (question, outcomes, implied probabilities, liquidity/volume).
-- Normalize to one internal schema consumed by `core.agent`.
-- Add freshness and basic data-quality checks.
-- Keep decision module in safe `hold` mode until risk rules are implemented.
+These components are intentionally read-only stubs and keep the decision flow in safe `hold` mode.
 
 ## Candidate libraries and external APIs
 

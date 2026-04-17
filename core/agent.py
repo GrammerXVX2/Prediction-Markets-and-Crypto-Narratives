@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import datetime, timezone
 from dataclasses import dataclass
 from typing import Dict, List
 
@@ -61,3 +62,13 @@ class PredictionNarrativeAgent:
     def decide(self, context: AgentContext) -> Dict:
         """Return a placeholder action decision using risk controls."""
         return self.risk_manager.build_decision(context)
+
+
+def aggregate_quotes_and_news(event_quotes: List[Dict], news_posts: List[Dict]) -> Dict:
+    """Build a decision input payload from market quotes and narrative signals."""
+    return {
+        "event_quotes": event_quotes,
+        "news_posts": news_posts,
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "status": "prototype_no_business_logic",
+    }
