@@ -34,8 +34,6 @@ def build_agent() -> PredictionNarrativeAgent:
 def run_workflow() -> None:
     """Example workflow: collect new info -> analyze -> make decision."""
     agent = build_agent()
-    polymarket = PolymarketAdapter()
-    news = NewsAdapter()
 
     updates = agent.collect_information()
     log_event("data_collected", {"items": len(updates)})
@@ -43,13 +41,20 @@ def run_workflow() -> None:
     context = agent.analyze(updates)
     log_event("analysis_complete", context)
 
-    decision_payload = aggregate_quotes_and_news(
-        event_quotes=polymarket.fetch_event_quotes(),
-        news_posts=news.fetch_latest_posts_by_keywords(
-            keywords=["bitcoin", "ethereum"],
-            limit=10,
-        ),
-    )
+    event_quotes = []
+    news_posts = []
+    for adapter in agent.data_adapters:
+        if isinstance(adapter, PolymarketAdapter):
+            event_quotes.extend(adapter.fetch_event_quotes())
+        if isinstance(adapter, NewsAdapter):
+            news_posts.extend(
+                adapter.fetch_latest_posts_by_keywords(
+                    keywords=["bitcoin", "ethereum"],
+                    limit=10,
+                )
+            )
+
+    decision_payload = aggregate_quotes_and_news(event_quotes=event_quotes, news_posts=news_posts)
     log_event("first_integration_payload_ready", decision_payload)
 
     decision = agent.decide(context)
