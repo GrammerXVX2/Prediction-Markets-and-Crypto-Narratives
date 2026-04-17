@@ -68,7 +68,7 @@ Added a primitive sentiment workflow with placeholder logic:
   - `SentimentAnalyzer.analyze_text(text)`: lightweight keyword-based stub returning `positive|neutral|negative` labels.
   - `SentimentAnalyzer.analyze_batch(texts)`: batch helper for multiple texts.
 - `data/news_adapter.py`
-  - `attach_sentiment_labels(posts, analyzer)`: enriches collected news posts with sentiment labels.
+  - `with_sentiment_labels(posts, sentiment_analyzer)`: enriches collected news posts with sentiment labels.
 - `main.py`
   - End-to-end path now includes: collect news → label sentiment → log sentiment-tagged results.
 

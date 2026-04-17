@@ -44,7 +44,6 @@ def run_workflow() -> None:
     log_event("analysis_complete", context)
 
     event_quotes = []
-    news_posts = []
     labeled_news_posts = []
     for adapter in agent.data_adapters:
         if isinstance(adapter, PolymarketAdapter):
@@ -54,9 +53,11 @@ def run_workflow() -> None:
                 keywords=["bitcoin", "ethereum"],
                 limit=10,
             )
-            news_posts.extend(adapter_news_posts)
             labeled_news_posts.extend(
-                adapter.attach_sentiment_labels(adapter_news_posts, analyzer=sentiment_analyzer)
+                adapter.with_sentiment_labels(
+                    adapter_news_posts,
+                    sentiment_analyzer=sentiment_analyzer,
+                )
             )
 
     log_event("sentiment_analysis_complete", {"labeled_news_posts": labeled_news_posts})

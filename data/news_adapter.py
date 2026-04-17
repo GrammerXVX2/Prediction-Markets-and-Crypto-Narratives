@@ -30,19 +30,19 @@ class NewsAdapter(DataAdapter):
         ]
 
         normalized_keywords = {keyword.lower() for keyword in keywords}
-        filtered_posts = [
-            post
-            for post in prototype_posts
-            if any(keyword in f"{post['title']} {post['summary']}".lower() for keyword in normalized_keywords)
-        ]
+        filtered_posts = []
+        for post in prototype_posts:
+            post_text = f"{post['title']} {post['summary']}".lower()
+            if any(keyword in post_text for keyword in normalized_keywords):
+                filtered_posts.append(post)
         return filtered_posts[:limit]
 
-    def attach_sentiment_labels(self, posts: List[Dict], analyzer: SentimentAnalyzer) -> List[Dict]:
-        """Attach sentiment labels to each post using a primitive analyzer."""
+    def with_sentiment_labels(self, posts: List[Dict], sentiment_analyzer: SentimentAnalyzer) -> List[Dict]:
+        """Return copies of posts enriched with sentiment labels."""
         labeled_posts: List[Dict] = []
         for post in posts:
             text = f"{post.get('title', '')} {post.get('summary', '')}".strip()
-            sentiment = analyzer.analyze_text(text=text)
+            sentiment = sentiment_analyzer.analyze_text(text=text)
             labeled_posts.append({**post, "sentiment": sentiment})
         return labeled_posts
 
